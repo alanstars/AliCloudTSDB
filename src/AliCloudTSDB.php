@@ -26,7 +26,7 @@ class AliCloudTSDB
 {
 
     /**
-     * TSDB 实例访问链接
+     * TSDB 实例访问链接.
      * @var null
      */
     private $hosts = null;
