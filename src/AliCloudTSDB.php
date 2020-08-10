@@ -144,15 +144,15 @@ class AliCloudTSDB
                 $result = 'method_override=post';
                 break;
             case 'put':
-                $result = 'method_override=put';
+                $result = 'method_override=put&';
                 break;
             case 'delete':
-                $result = 'method_override=delete';
+                $result = 'method_override=delete&';
                 break;
             default:
-                $result = 'method_override=get';
+                $result = 'method_override=get&';
                 break;
         }
-        return $result.'&';
+        return $result;
     }
 }
