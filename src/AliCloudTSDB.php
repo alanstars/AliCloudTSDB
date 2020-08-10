@@ -53,20 +53,23 @@ class AliCloudTSDB
      */
     private $param = null;
 
-    public function __construct($hosts=null,$method=null,$api=null,$param=null)
+    public function __construct($hosts=null)
     {
-        if(empty($hosts) || empty($method) || empty($api)){
-            return ['resultcode'=>4001,'resultdesc'=>'必传参数不能为空，请检查hosts，method或api参数是否为空'];
+        if(empty($hosts)){
+            return ['resultcode'=>4001,'resultdesc'=>'必传参数不能为空，请检查hosts参数是否为空'];
             die;
         }
         $this->hosts = $hosts;
-        $this->method = $method;
-        $this->method_override = $this->switchToMethod($method);
-        $this->api = $api;
-        $this->param = $param;
+
     }
 
     public function request(){
+        if(empty($this->method) || empty($this->api) || empty($this->param)){
+            return ['resultcode'=>4005,'resultdesc'=>'必传参数不能为空，请检查method,api或param参数是否为空'];
+            die;
+        }
+        $this->method_override = $this->switchToMethod($this->method);
+
         $url = $this->hosts.$this->api.'?'.$this->method_override.http_build_query($this->param);
         try{
             $response = file_get_contents($url,false,stream_context_create($this->header()));
@@ -75,6 +78,34 @@ class AliCloudTSDB
             return $exception;
         }
     }
+
+    public function method($method){
+        if(empty($method)){
+            return ['resultcode'=>4002,'resultdesc'=>'必传参数不能为空，请检查method参数是否为空'];
+            die;
+        }
+        $this->method = $method;
+        return $this;
+    }
+
+    public function api($api){
+        if(empty($api)){
+            return ['resultcode'=>4003,'resultdesc'=>'必传参数不能为空，请检查api参数是否为空'];
+            die;
+        }
+        $this->api = $api;
+        return $this;
+    }
+
+    public function param($param){
+        if(empty($param)){
+            return ['resultcode'=>4004,'resultdesc'=>'必传参数不能为空，请检查param参数是否为空'];
+            die;
+        }
+        $this->param = $param;
+        return $this;
+    }
+
 
     private function header(){
 
