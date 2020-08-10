@@ -16,6 +16,8 @@
 namespace CoolElephant\AliCloudTSDB;
 
 
+use GuzzleHttp\Client;
+
 /**
  * 封装阿里云时序数据库TSDB的HTTP请求
  * 说明文档：https://help.aliyun.com/document_detail/63557.html?spm=a2c4g.11186623.6.646.26e41a05avR0vh
@@ -25,6 +27,8 @@ namespace CoolElephant\AliCloudTSDB;
 class AliCloudTSDB
 {
 
+    private $username = null;
+    private $password = null;
     /**
      * TSDB 实例访问链接.
      * @var null
@@ -53,13 +57,16 @@ class AliCloudTSDB
      */
     private $param = null;
 
-    public function __construct($hosts=null)
+    public function __construct($username=null,$password=null,$hosts=null)
     {
-        if(empty($hosts)){
-            return ['resultcode'=>4001,'resultdesc'=>'必传参数不能为空，请检查hosts参数是否为空'];
+        if(empty($username) || empty($password) || empty($hosts)){
+            return ['resultcode'=>4001,'resultdesc'=>'必传参数不能为空，请检查username,password或hosts参数是否为空'];
             die;
         }
+        $this->username = $username;
+        $this->password = $password;
         $this->hosts = $hosts;
+
 
     }
 
@@ -70,9 +77,16 @@ class AliCloudTSDB
         }
         $this->method_override = $this->switchToMethod($this->method);
 
-        $url = $this->hosts.$this->api.'?'.$this->method_override.http_build_query($this->param);
+        $url = $this->hosts.$this->api.'?'.$this->method_override;
         try{
-            $response = $this->curl_post($url,$this->param);
+            $client = new Client();
+            $option = [
+                'headers'   =>  [
+                    'Authorization:'.base64_encode($this->username.':'.$this->password)
+                ],
+                'body'  =>  $this->param
+            ];
+            $response = $client->request($this->method,$url,$this->param);
 //            file_get_contents($url,false,stream_context_create($this->header()));
             return $response;
         }catch (\Exception $exception){
@@ -145,13 +159,13 @@ class AliCloudTSDB
                 $result = 'method_override=post';
                 break;
             case 'put':
-                $result = 'method_override=put&';
+                $result = 'method_override=put';
                 break;
             case 'delete':
-                $result = 'method_override=delete&';
+                $result = 'method_override=delete';
                 break;
             default:
-                $result = 'method_override=get&';
+                $result = 'method_override=get';
                 break;
         }
         return $result;
