@@ -1,5 +1,5 @@
 {
-    "name": "coolelephant/aliyunt-sdbapi",
+    "name": "coolelephant/aliyun-tsdbapi",
     "description": "阿里云时序数据库HTTP请求接口，aliyun TSDB cloud api,阿里云TSDB http请求API,适用华为云全部产品",
     "keywords": ["Aliyun TSDB cloud SDK","Aliyun TSDB cloud API","阿里云时序数据库接口","阿里云时序数据库"],
     "type": "library",
