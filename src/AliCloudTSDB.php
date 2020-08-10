@@ -86,7 +86,7 @@ class AliCloudTSDB
                 ],
                 'body'  =>  $this->param
             ];
-            $response = $client->request($this->method,$url,$this->param);
+            $response = $client->request($this->method,$url,$option);
 //            file_get_contents($url,false,stream_context_create($this->header()));
             return $response;
         }catch (\Exception $exception){
