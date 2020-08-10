@@ -79,6 +79,10 @@ class AliCloudTSDB
         }
     }
 
+    /**
+     * @param $method
+     * @return $this|array
+     */
     public function method($method){
         if(empty($method)){
             return ['resultcode'=>4002,'resultdesc'=>'必传参数不能为空，请检查method参数是否为空'];
@@ -88,6 +92,10 @@ class AliCloudTSDB
         return $this;
     }
 
+    /**
+     * @param $api
+     * @return $this|array
+     */
     public function api($api){
         if(empty($api)){
             return ['resultcode'=>4003,'resultdesc'=>'必传参数不能为空，请检查api参数是否为空'];
@@ -97,6 +105,10 @@ class AliCloudTSDB
         return $this;
     }
 
+    /**
+     * @param $param
+     * @return $this|array
+     */
     public function param($param){
         if(empty($param)){
             return ['resultcode'=>4004,'resultdesc'=>'必传参数不能为空，请检查param参数是否为空'];
@@ -108,7 +120,6 @@ class AliCloudTSDB
 
 
     private function header(){
-
         return [
             'http' => [
                 'method' => $this->method, // 请求方法
