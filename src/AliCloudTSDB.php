@@ -112,15 +112,12 @@ class AliCloudTSDB
             $option = [
                 'headers'        => [
                     'Accept-Encoding' => 'gzip',
-                    'Accept'     => 'application/json',
-                    ],
+                ],
                 'decode_content'    =>  true,
                 'auth'  =>  [$this->username,$this->password],
-                'body'  =>  $this->param,
                 'debug' => $this->isDebug
             ];
-            $response = $client->request($this->method,$url,$option);
-//            file_get_contents($url,false,stream_context_create($this->header()));
+            $response = $client->request($this->method,$url,array_merge($option,$this->param));
             return $response;
         }catch (\Exception $exception){
             return ['code'=>$exception->getCode(),'message'=>$exception->getMessage()];
@@ -158,7 +155,10 @@ class AliCloudTSDB
     }
 
     /**
-     * 设置请求参数
+     * 设置请求参数,根据不同请求，需要设置不同的主字段，比如
+     *          application/x-www-form-urlencoded 请求 格式为['form_params' => [字段]]
+     *          multipart/form-data 请求 格式为 ['multipart' => [字段]]
+     *          application/json    请求 格式为 ['json' => [字段]]
      * @param $param
      * @return $this|array
      */
