@@ -78,7 +78,12 @@ class AliCloudTSDB
         }
         $this->username = $username;
         $this->password = $password;
-        $this->hosts = $hosts;
+        if(stripos($hosts,'http') === 0){
+            $this->hosts = $hosts;
+        }else{
+            $this->hosts = 'http://'.$hosts;
+        }
+
     }
 
     /**
