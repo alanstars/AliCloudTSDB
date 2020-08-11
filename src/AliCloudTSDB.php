@@ -66,12 +66,18 @@ class AliCloudTSDB
     private $param = null;
 
     /**
+     * 是否开启debug模式
+     * @var bool
+     */
+    private $isDebug = false;
+
+    /**
      * AliCloudTSDB constructor.
      * @param null $username
      * @param null $password
      * @param null $hosts
      */
-    public function __construct($username=null,$password=null,$hosts=null)
+    public function __construct($username=null,$password=null,$hosts=null,$isDebug = false)
     {
         if(empty($username) || empty($password) || empty($hosts)){
             return ['code'=>4001,'message'=>'必传参数不能为空，请检查username,password或hosts参数是否为空'];
@@ -84,6 +90,7 @@ class AliCloudTSDB
         }else{
             $this->hosts = 'http://'.$hosts;
         }
+        $this->isDebug = $isDebug;
 
     }
 
@@ -99,14 +106,18 @@ class AliCloudTSDB
         }
         $this->method_override = $this->switchToMethod($this->method);
 
-        $url = $this->hosts.$this->api.'?'.$this->method_override;
+        $url = $this->api.'?'.$this->method_override;
         try{
-            $client = new Client();
+            $client = new Client(['base_uri'=>$this->hosts]);
             $option = [
-                'headers'   =>  [
-                    'Authorization'=>'Basic '.base64_encode($this->username.':'.$this->password)
-                ],
-                'json'  =>  $this->param
+                'headers'        => [
+                    'Accept-Encoding' => 'gzip',
+                    'Accept'     => 'application/json',
+                    ],
+                'decode_content'    =>  true,
+                'auth'  =>  [$this->username,$this->password],
+                'body'  =>  $this->param,
+                'debug' => $this->isDebug
             ];
             $response = $client->request($this->method,$url,$option);
 //            file_get_contents($url,false,stream_context_create($this->header()));
