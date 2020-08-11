@@ -26,8 +26,15 @@ use GuzzleHttp\Client;
  */
 class AliCloudTSDB
 {
-
+    /**
+     * 用户名
+     * @var null
+     */
     private $username = null;
+    /**
+     * 密码
+     * @var null
+     */
     private $password = null;
     /**
      * TSDB 实例访问链接.
@@ -57,6 +64,12 @@ class AliCloudTSDB
      */
     private $param = null;
 
+    /**
+     * AliCloudTSDB constructor.
+     * @param null $username
+     * @param null $password
+     * @param null $hosts
+     */
     public function __construct($username=null,$password=null,$hosts=null)
     {
         if(empty($username) || empty($password) || empty($hosts)){
@@ -66,10 +79,13 @@ class AliCloudTSDB
         $this->username = $username;
         $this->password = $password;
         $this->hosts = $hosts;
-
-
     }
 
+    /**
+     * 请求
+     * @return array|\Exception|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function request(){
         if(empty($this->method) || empty($this->api) || empty($this->param)){
             return ['resultcode'=>4005,'resultdesc'=>'必传参数不能为空，请检查method,api或param参数是否为空'];
@@ -95,6 +111,7 @@ class AliCloudTSDB
     }
 
     /**
+     * 设置方法
      * @param $method
      * @return $this|array
      */
@@ -108,6 +125,7 @@ class AliCloudTSDB
     }
 
     /**
+     * 设置url
      * @param $api
      * @return $this|array
      */
@@ -121,6 +139,7 @@ class AliCloudTSDB
     }
 
     /**
+     * 设置请求参数
      * @param $param
      * @return $this|array
      */
@@ -133,20 +152,6 @@ class AliCloudTSDB
         return $this;
     }
 
-
-    private function header(){
-        return [
-            'http' => [
-                'method' => $this->method, // 请求方法
-                'content'   =>  json_encode($this->param),
-                'header' => [
-                    'Accept: application/json',
-                    'Content-Type: application/json;charset=UTF-8',
-                ],  //请求头部
-                'ignore_errors' => true // 返回json格式
-            ]
-        ];
-    }
     /**
      * method转换成功method_override
      * @param $method
