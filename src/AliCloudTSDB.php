@@ -103,7 +103,7 @@ class AliCloudTSDB
             $client = new Client();
             $option = [
                 'headers'   =>  [
-                    'Authorization:'.base64_encode($this->username.':'.$this->password)
+                    'Authorization'=>'Basic '.base64_encode($this->username.':'.$this->password)
                 ],
                 'form_params'  =>  $this->param
             ];
