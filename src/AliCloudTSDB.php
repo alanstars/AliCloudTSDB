@@ -17,6 +17,7 @@ namespace CoolElephant\AliCloudTSDB;
 
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise\AggregateException;
 
 /**
  * 封装阿里云时序数据库TSDB的HTTP请求
@@ -73,7 +74,7 @@ class AliCloudTSDB
     public function __construct($username=null,$password=null,$hosts=null)
     {
         if(empty($username) || empty($password) || empty($hosts)){
-            return ['resultcode'=>4001,'resultdesc'=>'必传参数不能为空，请检查username,password或hosts参数是否为空'];
+            return ['code'=>4001,'message'=>'必传参数不能为空，请检查username,password或hosts参数是否为空'];
             die;
         }
         $this->username = $username;
@@ -93,7 +94,7 @@ class AliCloudTSDB
      */
     public function request(){
         if(empty($this->method) || empty($this->api) || empty($this->param)){
-            return ['resultcode'=>4005,'resultdesc'=>'必传参数不能为空，请检查method,api或param参数是否为空'];
+            return ['code'=>4005,'message'=>'必传参数不能为空，请检查method,api或param参数是否为空'];
             die;
         }
         $this->method_override = $this->switchToMethod($this->method);
@@ -111,7 +112,9 @@ class AliCloudTSDB
 //            file_get_contents($url,false,stream_context_create($this->header()));
             return $response;
         }catch (\Exception $exception){
-            return $exception;
+            return ['code'=>$exception->getCode(),'message'=>$exception->getMessage()];
+        }catch (AggregateException $exception){
+            return ['code'=>$exception->getCode(),'message'=>$exception->getMessage()];
         }
     }
 
@@ -122,7 +125,7 @@ class AliCloudTSDB
      */
     public function method($method){
         if(empty($method)){
-            return ['resultcode'=>4002,'resultdesc'=>'必传参数不能为空，请检查method参数是否为空'];
+            return ['code'=>4002,'message'=>'必传参数不能为空，请检查method参数是否为空'];
             die;
         }
         $this->method = $method;
@@ -136,7 +139,7 @@ class AliCloudTSDB
      */
     public function api($api){
         if(empty($api)){
-            return ['resultcode'=>4003,'resultdesc'=>'必传参数不能为空，请检查api参数是否为空'];
+            return ['code'=>4003,'message'=>'必传参数不能为空，请检查api参数是否为空'];
             die;
         }
         $this->api = $api;
@@ -150,7 +153,7 @@ class AliCloudTSDB
      */
     public function param($param){
         if(empty($param)){
-            return ['resultcode'=>4004,'resultdesc'=>'必传参数不能为空，请检查param参数是否为空'];
+            return ['code'=>4004,'message'=>'必传参数不能为空，请检查param参数是否为空'];
             die;
         }
         $this->param = $param;
