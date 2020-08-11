@@ -105,7 +105,7 @@ class AliCloudTSDB
                 'headers'   =>  [
                     'Authorization'=>'Basic '.base64_encode($this->username.':'.$this->password)
                 ],
-                'form_params'  =>  $this->param
+                'json'  =>  $this->param
             ];
             $response = $client->request($this->method,$url,$option);
 //            file_get_contents($url,false,stream_context_create($this->header()));
